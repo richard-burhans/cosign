@@ -194,7 +194,7 @@
 	cgi: login and transfer tickets with x509.
 	cgi: added ability to force re-authentication on a 
 		per-service basis.
-	cgi: tgts are transfered on macs again, we just build with MIT 			kerberos instead of on-board kerberos.
+	cgi: tgts are transferred on macs again, we just build with MIT 			kerberos instead of on-board kerberos.
 	cgi: check length of username before copy.
 	cgi/daemon: ticket stores are separable.
 	cgi/daemon: fixed miscellaneous core dump causing bugs.
@@ -369,7 +369,7 @@
 	more updates to README
 	rename common variables so there are no symbol conflicts
 	added access() to check access to crypto
-	cgi: realm is taken from krb5.conf defualt realm
+	cgi: realm is taken from krb5.conf default realm
 	cgi: fixed bug that was partially dropping query string on redirect
 	cgi: code no longer specifies how to do addressing with kerberos tickets
 	cgi: fixed endian bug in connect code
@@ -444,7 +444,7 @@
 	autoconf changes to support k5 and k4
 	autoconf changes to make libsnet shared and/or static
 	auconf changes to only build the filter if apxs is installed
-	cgi stores a tgt now, and propogates it
+	cgi stores a tgt now, and propagates it
 	logout takes a URL on the query string
 	cadir for cgi and filter
 	daemon has a conf file, with wildcard support

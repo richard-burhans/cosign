@@ -151,7 +151,7 @@ command line option, and the default is _COSIGN_TLS_CADIR
 .B cosigncert
 The location of the SSL server certificate for use by this program. This is overridden by the
 .B \-y
-command line option and the defualt is _COSIGN_TLS_CERT
+command line option and the default is _COSIGN_TLS_CERT
 .TP 19
 .BI cosignkey
 The location of the SSL key file for use by this program. This is overridden by the
@@ -215,7 +215,7 @@ tickets. The default is "off".
 .B cosignticketcache
 The path to the directory where cosign.cgi stores the kerberos tickets
 it generates upon successful kerberos login. These tickets are deleted
-once the ticket has been successfully transfered to cosignd. This
+once the ticket has been successfully transferred to cosignd. This
 setting is also the default path for the directory where cosignd stores
 its tickets, and the default is _COSIGN_TICKET_CACHE
 .TP 19
@@ -279,7 +279,7 @@ _COSIGN_PAM_SERVICE.
 .TP 19
 .B cosignlogouturl
 This is the URL the logout cgi will redirect a user to upon successful
-completion of logout. It can be overriden by passing a URL on the query
+completion of logout. It can be overridden by passing a URL on the query
 string to the logout cgi, as in
 http://cosign.edu/cosign-bin/logout?http://go.here.now.edu
 and the default is _COSIGN_LOGOUT_URL.

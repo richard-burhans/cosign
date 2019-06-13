@@ -606,7 +606,7 @@ f_time( SNET *sn, int ac, char *av[], SNET *pushersn )
 
     if ( al->al_key != CGI ) {
 	syslog( LOG_ERR, "%s not allowed to tell time", al->al_hostname );
-	snet_writef( sn, "%d TIME: %s not allowed to propogate time.\r\n",
+	snet_writef( sn, "%d TIME: %s not allowed to propagate time.\r\n",
 		460, al->al_hostname );
 	return( 1 );
     }

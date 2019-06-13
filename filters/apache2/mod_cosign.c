@@ -1044,16 +1044,16 @@ set_cosign_certs( cmd_parms *params, void *mconfig,
     }
 
     if ( access( cfg->key, R_OK ) != 0 ) {
-	return( "An error occured reading the Keyfile." );
+	return( "An error occurred reading the Keyfile." );
     }
 
     if ( access( cfg->cert, R_OK ) != 0 ) {
-	return( "An error occured reading the Certfile." );
+	return( "An error occurred reading the Certfile." );
     }
 
     if ( S_ISDIR( st.st_mode )) {
 	if ( access( cfg->cadir, R_OK | X_OK ) != 0 ) {
-	    return( "An error occured reading the CADir." );
+	    return( "An error occurred reading the CADir." );
 	}
     } else if ( access( cfg->cadir, R_OK ) != 0 ) {
 	return( "An error occurred reading the CAfile." );

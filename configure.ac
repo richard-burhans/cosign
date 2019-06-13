@@ -13,8 +13,8 @@ AC_PROG_INSTALL
 AC_CANONICAL_HOST 
 
 # Checks for libraries.
-AC_CHECK_LIB([nsl], [inet_ntoa])
-AC_CHECK_LIB([socket], [socket])
+AC_SEARCH_LIBS([inet_ntoa], [nsl])
+AC_SEARCH_LIBS([socket], [socket])
 
 AC_ARG_ENABLE(apache1, AC_HELP_STRING([--enable-apache1=path_to_apache1.3-apxs], [enable apache 1.3 filter] ), CHECK_APACHE_1, AC_MSG_RESULT( apache 1.3 not enabled))
 
@@ -24,12 +24,21 @@ AC_ARG_ENABLE(lighttpd, AC_HELP_STRING([--enable-lighttpd=path_to_lighttpd], [en
 
 AC_ARG_ENABLE(krb, AC_HELP_STRING([--enable-krb=path_to_krb], [enable kerberos for the cgi and apache filter]), CHECK_LIBKRB, AC_MSG_RESULT( kerberos not enabled))
 
+AC_ARG_VAR([KRB_CFLAGS], [kerberos CFLAGS])
+AC_ARG_VAR([KRB_LDFLAGS], [kerberos LDFLAGS])
+AC_ARG_VAR([KRB_LIBS], [kerberos LIBS])
+
 AC_ARG_ENABLE(mysql, AC_HELP_STRING([--enable-mysql=path_to_mysql], [enable mysql for guest login support in the cgi]), CHECK_LIBMYSQL, AC_MSG_RESULT( mysql not enabled))
 
 AC_ARG_ENABLE(pam, AC_HELP_STRING([--enable-pam=yes/no], [enable PAM login support in the cgi]), [CHECK_LIBPAM], AC_MSG_RESULT( pam not enabled))
 
 AC_ARG_WITH(gss, AC_HELP_STRING([--with-gss], [enable apache filter
 to set up GSSAPI ]), CHECK_GSS, AC_MSG_RESULT( GSSAPI not enabled))
+
+AC_ARG_VAR([GSS_LIBS], [GSSAPI LIBS])
+
+AC_ARG_WITH(cgiroot, AC_HELP_STRING([--with-cgiroot=DIR], [default cosign cgi root directory]), cgiroot="$withval", cgiroot="$prefix")
+AC_SUBST(cgiroot)
 
 AC_ARG_WITH(cosigndb, AC_HELP_STRING([--with-cosigndb=DIR], [default cosign database storage]), cosigndb="$withval", cosigndb="/var/cosign/daemon" )
 AC_SUBST(cosigndb)
@@ -93,7 +102,7 @@ CHECK_SSL
 AC_CHECK_HEADER([openssl/ssl.h], [], [AC_MSG_ERROR([header file <openssl/ssl.h> is required for this software. 
 You may be running RedHat 9.
 If so, see the FAQ or the README for further instructions.])])
-AC_CHECK_LIB([crypto], [X509_VERIFY_PARAM_set_flags], [AC_DEFINE(HAVE_X509_VERIFY_PARAM)], [])
+AC_CHECK_LIB([crypto], [X509_VERIFY_PARAM_set_flags], [AC_DEFINE([HAVE_X509_VERIFY_PARAM], [1], [Define to 1 to enable certificate revocation list support to cosignd.])], [])
 
 # Checks for filters:
 

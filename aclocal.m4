@@ -32,7 +32,7 @@ AC_DEFUN([CHECK_SSL],
     esac
 
     CPPFLAGS="$CPPFLAGS -I$ac_cv_path_ssl/include";
-    AC_DEFINE(HAVE_LIBSSL)
+    AC_DEFINE([HAVE_LIBSSL], [1], [Define to 1 if you have the `ssl' library (-lssl).])
     LIBS="$LIBS -lssl -lcrypto";
     LDFLAGS="$LDFLAGS -L$ac_cv_path_ssl/lib";
     AC_MSG_RESULT($ac_cv_path_ssl)
@@ -70,18 +70,35 @@ AC_DEFUN([CHECK_LIBKRB],
 	    done
 	])
     fi
-    if test ! -e "$ac_cv_path_krb" ; then
+
+    if test -n "$KRB_CFLAGS"; then
+        KINC="$KRB_CFLAGS";
+    elif test -n "$krb_include"; then
+        KINC="-I$krb_include";
+    else
         AC_MSG_ERROR(cannot find krb libraries)
     fi
+
+    if test -n "$KRB_LIBS"; then
+        KLIBS="$KRB_LIBS";
+    else
+        KLIBS="-lkrb5 -lk5crypto -lcom_err";
+    fi
+
+    if test -n "$KRB_LDFLAGS"; then
+        KLDFLAGS="$KRB_LDFLAGS";
+    elif test -e "$ac_cv_path_krb" ; then
+        KLDFLAGS="-L$ac_cv_path_krb/lib";
+    else
+        AC_MSG_ERROR(cannot find krb libraries)
+    fi
+
     KRBCGI="cosign.cgi"
     AC_SUBST(KRBCGI)
-    KINC="-I$krb_include";
     AC_SUBST(KINC)
-    KLIBS="-lkrb5 -lk5crypto -lcom_err";
     AC_SUBST(KLIBS)
-    KLDFLAGS="-L$ac_cv_path_krb/lib";
     AC_SUBST(KLDFLAGS)
-    AC_DEFINE(KRB)
+    AC_DEFINE([KRB], [1], [Define to 1 to enable kerberos for the cgi and apache filter.])
     AC_MSG_RESULT(Kerberos found at $ac_cv_path_krb)
 ])
 
@@ -110,22 +127,22 @@ AC_DEFUN([CHECK_APACHE2],
     fi
     APXS2_INCLUDEDIR="`${APXS2} -q INCLUDEDIR`"
     if test -f "$APXS2_INCLUDEDIR/ap_regex.h"; then
-	AC_DEFINE(HAVE_AP_REGEX_H)
+	AC_DEFINE([HAVE_AP_REGEX_H], [1], [Define to 1 if you have the apache 2 ap_regex.h header file.])
     fi
     APACHE2_MINOR_VERSION="`${APXS2_SBINDIR}/${APXS2_TARGET} -v | \
 	    sed -e '/^Server version:/!d' \
 	        -e 's/.*Apache\/2\.\(@<:@0-9@:>@\)\..*/\1/g'`"
     if test -n "${APACHE2_MINOR_VERSION}"; then
 	if test "${APACHE2_MINOR_VERSION}" -gt 0; then
-	    AC_DEFINE(HAVE_MOD_AUTHZ_HOST)
+	    AC_DEFINE([HAVE_MOD_AUTHZ_HOST], [1], [Define to 1 if the apache mod_authz_host module is present.])
 	    if test "${APACHE2_MINOR_VERSION}" -gt 2; then
-		AC_DEFINE(HAVE_APACHE_CONN_CLIENT_IP)
+		AC_DEFINE([HAVE_APACHE_CONN_CLIENT_IP], [1], [Define to 1 to use conn_rec struct member `client_ip' instead of `remote_ip'.])
 	    fi
 	fi
     fi
     AC_SUBST(APXS2)
     AC_SUBST(APACHECTL2)
-    AC_DEFINE(APACHE2)
+    AC_DEFINE([APACHE2], [1], [Define to 1 to build the apache 2 filter.])
     AC_MSG_RESULT(apache 2 filter will be built)
 
 ])
@@ -133,16 +150,35 @@ AC_DEFUN([CHECK_APACHE2],
 AC_DEFUN([CHECK_GSS],
 [
     AC_MSG_CHECKING(for gss)
-    if test ! -e "$ac_cv_path_krb" ; then
+
+    if test -n "$KRB_CFLAGS"; then
+        GSSINC="$KRB_CFLAGS";
+    elif test -n "$ac_cv_path_krb"; then
+        GSSINC="-I$ac_cv_path_krb/include";
+    else
         AC_MSG_ERROR(gss require krb5 libraries)
     fi
-    GSSINC="-I$ac_cv_path_krb/include";
+
+    if test -n "$GSS_LIBS"; then
+        GSSLIBS="$GSS_LIBS $KRB_LIBS";
+    elif test -n "$ac_cv_path_krb"; then
+        GSSLIBS="-lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err";
+    else
+        AC_MSG_ERROR(gss require krb5 libraries)
+    fi
+
+    if test -n "$KRB_LDFLAGS"; then
+        GSSLDFLAGS="$KRB_LDFLAGS";
+    elif test -e "$ac_cv_path_krb"; then
+        GSSLDFLAGS="-L$ac_cv_path_krb/lib";
+    else
+        AC_MSG_ERROR(gss require krb5 libraries)
+    fi
+
     AC_SUBST(GSSINC)
-    GSSLIBS="-lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err";
     AC_SUBST(GSSLIBS)
-    GSSLDFLAGS="-L$ac_cv_path_krb/lib";
     AC_SUBST(GSSLDFLAGS)
-    AC_DEFINE(GSS)
+    AC_DEFINE([GSS], [1], [Define to 1 to enable the apache filter to set up GSSAPI.])
     AC_MSG_RESULT($ac_cv_path_krb)
 ])
 
@@ -171,7 +207,7 @@ AC_DEFUN([CHECK_APACHE_1],
     fi
     AC_SUBST(APXS)
     AC_SUBST(APACHECTL)
-    AC_DEFINE(APACHE1)
+    AC_DEFINE([APACHE1], [1], [Define to 1 to build the apache 1.3 filter.])
     AC_MSG_RESULT(apache 1.3 filter will be built)
 
 ])
@@ -205,8 +241,8 @@ AC_DEFUN([CHECK_LIBMYSQL],
     AC_SUBST(MYSQLLIBS)
     MYSQLLDFLAGS="-L$ac_cv_path_mysql/lib/mysql -R$ac_cv_path_mysql/lib/mysql";
     AC_SUBST(MYSQLLDFLAGS)
-    AC_DEFINE(HAVE_MYSQL)
-    AC_DEFINE(SQL_FRIEND)
+    AC_DEFINE([HAVE_MYSQL], [1], [Define to 1 if you have the `mysqlclient' library (-lmysqlclient).])
+    AC_DEFINE([SQL_FRIEND], [1], [Define to 1 to enable mysql for guest login support in the cgi.])
     AC_MSG_RESULT($ac_cv_path_mysql)
 ])
 
@@ -217,7 +253,7 @@ AC_DEFUN([CHECK_LIBPAM],
     AS_IF([test x"$enableval" = x"yes"], [
 	AC_SEARCH_LIBS([pam_start], [pam],
 	    [
-		AC_DEFINE(HAVE_LIBPAM)
+		AC_DEFINE([HAVE_LIBPAM], [1], [Define to 1 to enable the internal PAM authenticator.])
 		AC_CHECK_HEADERS([pam/pam_appl.h security/pam_appl.h],
 		    [
 			pam_headers_found="yes"; break;
@@ -327,7 +363,7 @@ AC_DEFUN([CHECK_LIGHTTPD],
     LIGHTTPD_COSIGN_SRCDIR=`pwd`
 
     AC_SUBST(LIGHTTPD_COSIGN_SRCDIR)
-    AC_DEFINE(HAVE_LIGHTTPD)
+    AC_DEFINE([HAVE_LIGHTTPD], [1], [Define to 1 to build the lighttpd filter.])
     FILTERS="$FILTERS filters/lighttpd"
     AC_MSG_RESULT(lighttpd filter will be built)
 ])

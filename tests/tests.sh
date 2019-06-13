@@ -332,7 +332,8 @@ ca_answers() {
 clear_ca() {
     [ -d "CA" ] || return
 
-    pushd CA >/dev/null
+    old_pwd="$PWD"
+    cd CA >/dev/null
 
     dirs="certs crl newcerts private"
     for d in ${dirs}; do
@@ -344,7 +345,7 @@ clear_ca() {
 
     rm -f "serial" "index.txt"
 
-    popd >/dev/null
+    cd "$old_pwd" >/dev/null
 }
 
 create_ca_paths() {
@@ -362,7 +363,8 @@ create_ca_cert_and_key() {
     ca_key="private/cakey.pem"
     ca_crt="private/cacert.pem"
 
-    pushd CA >/dev/null
+    old_pwd="$PWD"
+    cd CA >/dev/null
 
     rm -f "${ca_key}"
     rm -f "${ca_crt}"
@@ -375,7 +377,7 @@ create_ca_cert_and_key() {
     [ -f "${ca_key}" ] || die "failed to create CA key!"
     [ -f "${ca_crt}" ] || die "failed to create CA cert!"
 
-    popd >/dev/null
+    cd "$old_pwd" >/dev/null
 }
 
 create_hashed_ca_path() {
@@ -497,13 +499,14 @@ mkhashdirs() {
     h="${h} A B C D E F G H I J K L M N O P Q R S T U V W X Y Z"
     h="${h} 0 1 2 3 4 5 6 7 8 9 + -"
 
-    pushd "${dbdir}" >/dev/null
+    old_pwd="$PWD"
+    cd "${dbdir}" >/dev/null
 
     for i in ${h}; do
 	mkdir -p -- "${i}"
     done
 
-    popd
+    cd "$old_pwd"
 }
 
 create_cosign_login_html_template() {
