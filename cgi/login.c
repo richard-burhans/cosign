@@ -34,6 +34,12 @@
     #endif /* HAVE_PAM_APPL_H */
 #endif /* HAVE_LIBPAM */
 
+#ifdef HAVE_KRB_NAME_COSIGNNAME
+#define KRB_NAME cosignname
+#else /* HAVE_KRB_NAME_COSIGNNAME */
+#define KRB_NAME id
+#endif /* HAVE_KRB_NAME_COSIGNNAME */
+
 #include <string.h>
 #include <snet.h>
 
@@ -294,7 +300,7 @@ cosign_login_krb5( struct connlist *head, char *cosignname, char *id,
 	exit( 0 );
     }
 
-    if (( kerror = krb5_parse_name( kcontext, id, &kprinc ))) {
+    if (( kerror = krb5_parse_name( kcontext, KRB_NAME, &kprinc ))) {
 	sl[ SL_ERROR ].sl_data = (char *)krb5_get_error_message( kcontext, kerror );
 	sl[ SL_TITLE ].sl_data = "Authentication Required ( kerberos error )";
 	subfile( tmpl, sl, 0 );

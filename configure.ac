@@ -24,6 +24,13 @@ AC_ARG_ENABLE(lighttpd, AC_HELP_STRING([--enable-lighttpd=path_to_lighttpd], [en
 
 AC_ARG_ENABLE(krb, AC_HELP_STRING([--enable-krb=path_to_krb], [enable kerberos for the cgi and apache filter]), CHECK_LIBKRB, AC_MSG_RESULT( kerberos not enabled))
 
+AC_ARG_WITH([krb_name_cosignname],
+            AC_HELP_STRING([--with-krb_name_cosignname], [use cosignname instead of id in krb5_parse_name]),
+            [want_krb_name_cosignname="$withval"], [want_krb_name_cosignname=no])
+
+AS_IF([test "$want_krb_name_cosignname" = yes],
+      [AC_DEFINE([HAVE_KRB_NAME_COSIGNNAME], [1], [Define to 1 to use cosignname instead of id in krb5_parse_name])])
+
 AC_ARG_VAR([KRB_CFLAGS], [kerberos CFLAGS])
 AC_ARG_VAR([KRB_LDFLAGS], [kerberos LDFLAGS])
 AC_ARG_VAR([KRB_LIBS], [kerberos LIBS])
