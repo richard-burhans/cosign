@@ -100,6 +100,7 @@ loop_checker( int time, int count, char *cookie )
 {
     struct timeval	tv;
     char       		new_cookie[ 255 ];
+    int			snprintf_rc;
 
     if ( gettimeofday( &tv, NULL ) != 0 ) {
 	sl[ SL_TITLE ].sl_data = "Error: Loop Breaker";
@@ -112,8 +113,8 @@ loop_checker( int time, int count, char *cookie )
     if (( tv.tv_sec - time ) > LOOPWINDOW ) {
 	time = tv.tv_sec;
 	count = 1;
-	if ( snprintf( new_cookie, sizeof( new_cookie ),
-		"%s/%d/%d", cookie, time, count) >= sizeof( new_cookie )) {
+	snprintf_rc = snprintf( new_cookie, sizeof( new_cookie ), "%s/%d/%d", cookie, time, count);
+	if ( snprintf_rc < 0 || (size_t) snprintf_rc >= sizeof( new_cookie )) {
 	    sl[ SL_TITLE ].sl_data = "Error: Loop Breaker";
 	    sl[ SL_ERROR ].sl_data = "Please try again later.";
 	    subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
@@ -128,8 +129,8 @@ loop_checker( int time, int count, char *cookie )
     if ( count >= MAXLOOPCOUNT ) {
 	time = tv.tv_sec;
 	count = 1;
-	if ( snprintf( new_cookie, sizeof( new_cookie ),
-		"%s/%d/%d", cookie, time, count) >= sizeof( new_cookie )) {
+	snprintf_rc = snprintf( new_cookie, sizeof( new_cookie ), "%s/%d/%d", cookie, time, count);
+	if ( snprintf_rc < 0 || (size_t) snprintf_rc >= sizeof( new_cookie )) {
 	    sl[ SL_TITLE ].sl_data = "Error: Loop Breaker";
 	    sl[ SL_ERROR ].sl_data = "Please try again later.";
 	    subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
@@ -141,8 +142,8 @@ loop_checker( int time, int count, char *cookie )
 
     /* we're still in the limit, increment and keep going */
     count++;
-    if ( snprintf( new_cookie, sizeof( new_cookie ),
-	    "%s/%d/%d", cookie, time, count) >= sizeof( new_cookie )) {
+    snprintf_rc = snprintf( new_cookie, sizeof( new_cookie ), "%s/%d/%d", cookie, time, count);
+    if ( snprintf_rc < 0 || (size_t) snprintf_rc >= sizeof( new_cookie )) {
 	sl[ SL_TITLE ].sl_data = "Error: Loop Breaker";
 	sl[ SL_ERROR ].sl_data = "Please try again later.";
 	subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
@@ -272,6 +273,7 @@ main( int argc, char *argv[] )
     int				rebasic = 0, len, server_port;
     int				reauth = 0, scheme = 2;
     int				i, j;
+    unsigned int		uk;
     char                	new_cookiebuf[ 128 ];
     char        		new_cookie[ 255 ];
     char			new_scookie[ 255 ];
@@ -671,17 +673,17 @@ main( int argc, char *argv[] )
     /* insert factor form fields into cl */
     for ( fl = factorlist; fl != NULL; fl = fl->fl_next ) {
 	for ( ff = fl->fl_formfield; *ff != NULL; ff++ ) {
-	    for ( i = 0; i < ( sizeof( cl ) / sizeof( cl[ 0 ] )) - 1; i++ ) {
-		if ( cl[ i ].cl_key == NULL ) {
-		    cl[ i ].cl_key = *ff;
-		    cl[ i ].cl_type = CGI_TYPE_STRING;
+	    for ( uk = 0; (size_t) uk < ( sizeof( cl ) / sizeof( cl[ 0 ] )) - 1; uk++ ) {
+		if ( cl[ uk ].cl_key == NULL ) {
+		    cl[ uk ].cl_key = *ff;
+		    cl[ uk ].cl_type = CGI_TYPE_STRING;
 		    break;
 		}
-		if ( strcmp( *ff, cl[ i ].cl_key ) == 0 ) {
+		if ( strcmp( *ff, cl[ uk ].cl_key ) == 0 ) {
 		    break;
 		}
 	    }
-	    if ( cl[ i ].cl_key == NULL ) {
+	    if ( cl[ uk ].cl_key == NULL ) {
 		sl[ SL_TITLE ].sl_data = "Error: Server Configuration";
 		sl[ SL_ERROR ].sl_data = "Too many form fields configured.";
 		subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );

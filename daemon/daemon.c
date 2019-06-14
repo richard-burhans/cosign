@@ -33,6 +33,7 @@
 #include "monster.h"
 #include "pusher.h"
 
+#define UNUSED(expr) do { (void)(expr); } while (0)
 
 int		debug = 0;
 int		backlog = 5;
@@ -115,6 +116,7 @@ daemon_configure()
     void
 hup( int sig )
 {
+    UNUSED(sig);
     reconfig++; 
     return;
 }
@@ -122,6 +124,7 @@ hup( int sig )
     void
 chld( int sig )
 {
+    UNUSED(sig);
     child_signal++;
     return;
 }
