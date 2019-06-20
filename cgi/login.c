@@ -40,6 +40,12 @@
 #define KRB_NAME id
 #endif /* HAVE_KRB_NAME_COSIGNNAME */
 
+#ifdef HAVE_AP_REQ_NOFAIL
+#define AP_REQ_NOFAIL 1
+#else /* HAVE_AP_REQ_NOFAIL */
+#define AP_REQ_NOFAIL 0
+#endif /* HAVE_AP_REQ_NOFAIL */
+
 #include <string.h>
 #include <snet.h>
 
@@ -402,7 +408,7 @@ cosign_login_krb5( struct connlist *head, char *cosignname, char *id,
 
 	/* from mdw */
 	krb5_verify_init_creds_opt_init( kvic_opts );
-	krb5_verify_init_creds_opt_set_ap_req_nofail( kvic_opts, 1 );
+	krb5_verify_init_creds_opt_set_ap_req_nofail( kvic_opts, AP_REQ_NOFAIL );
 
 	if (( kerror = krb5_kt_resolve( kcontext, ktbuf, &keytab )) != 0 ) {
 	    sl[ SL_ERROR ].sl_data = (char *)krb5_get_error_message( kcontext, kerror );

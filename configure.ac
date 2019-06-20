@@ -31,6 +31,12 @@ AC_ARG_WITH([krb_name_cosignname],
 AS_IF([test "$want_krb_name_cosignname" = yes],
       [AC_DEFINE([HAVE_KRB_NAME_COSIGNNAME], [1], [Define to 1 to use cosignname instead of id in krb5_parse_name])])
 
+AC_ARG_ENABLE([ap_req_nofail],
+	      AC_HELP_STRING([--disable-ap_req_nofail], [disable krb5_verify_init_creds failing if ketyab information is not available]))
+
+AS_IF([test "x$enable_ap_req_nofail" != "xno"],
+      [AC_DEFINE([HAVE_AP_REQ_NOFAIL], [1], [Define to 1 enable krb5_verify_init_creds failing if keytab information is not abailable])])
+
 AC_ARG_VAR([KRB_CFLAGS], [kerberos CFLAGS])
 AC_ARG_VAR([KRB_LDFLAGS], [kerberos LDFLAGS])
 AC_ARG_VAR([KRB_LIBS], [kerberos LIBS])
