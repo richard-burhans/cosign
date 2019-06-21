@@ -36,8 +36,10 @@
 
 #ifdef HAVE_KRB_NAME_COSIGNNAME
 #define KRB_NAME cosignname
+#define COSIGN_LOGIN_USER id
 #else /* HAVE_KRB_NAME_COSIGNNAME */
 #define KRB_NAME id
+#define COSIGN_LOGIN_USER cosignname
 #endif /* HAVE_KRB_NAME_COSIGNNAME */
 
 #ifdef HAVE_AP_REQ_NOFAIL
@@ -489,7 +491,7 @@ cosign_login_krb5( struct connlist *head, char *cosignname, char *id,
     krb5_free_context( kcontext );
 
     /* password has been accepted, tell cosignd */
-    if ( cosign_login( head, cookie, ip_addr, cosignname, realm, 
+    if ( cosign_login( head, cookie, ip_addr, COSIGN_LOGIN_USER, realm,
 	    ( store_tickets ? krbpath : NULL )) < 0 ) {
 	fprintf( stderr, "cosign_login_krb5: login failed\n") ;
 	sl[ SL_ERROR ].sl_data = "We were unable to contact the "
