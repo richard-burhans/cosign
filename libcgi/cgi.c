@@ -397,7 +397,7 @@ error2:
     int
 cgi_multipart( CGIHANDLE *cgi, struct cgi_list cl[], char *dir, struct function *func )
 {
-    char 	*line = NULL, *filename = NULL, *filetype, *ptr;
+    char 	*line = NULL, *filename = NULL, *filetype = NULL, *ptr;
     char	*request_method;
     char	key[CGI_LINLEN];
     char	boundary[CGI_LINLEN];

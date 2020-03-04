@@ -256,7 +256,7 @@ RANDFILE	= \$dir/private/.rand
 
 default_days	= 365
 default_crl_days= 30
-default_md	= sha1
+default_md	= sha256
 
 policy		= policy_match
 
@@ -270,7 +270,7 @@ emailAddress            = supplied
 
 [ req ]
 default_bits		= 2048
-default_md		= sha1
+default_md		= sha256
 distinguished_name	= req_distinguished_name
 
 [ req_distinguished_name ]

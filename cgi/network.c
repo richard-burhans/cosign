@@ -108,15 +108,15 @@ cosign_choose_conn( struct connlist *head, void *netparams,
 	    retry = 1;
 	    break;
 
-	default:
-	    fprintf( stderr, "cosign_choose_conn: unknown return: %d", rc );
-
 	case COSIGN_ERROR :
             if ( snet_close( cur->conn_sn ) != 0 ) {
                 fprintf( stderr, "choose_conn: snet_close failed\n" );
             }
             cur->conn_sn = NULL;
 	    break;
+
+	default:
+	    fprintf( stderr, "cosign_choose_conn: unknown return: %d", rc );
         }
     }
 
@@ -140,15 +140,15 @@ cosign_choose_conn( struct connlist *head, void *netparams,
 	    retry = 1;
 	    break;
 
-	default:
-	    fprintf( stderr, "cosign_choose_conn: unknown return: %d", rc );
-
 	case COSIGN_ERROR :
             if ( snet_close( cur->conn_sn ) != 0 ) {
                 fprintf( stderr, "choose_conn: snet_close failed\n" );
             }
             cur->conn_sn = NULL;
 	    break;
+
+	default:
+	    fprintf( stderr, "cosign_choose_conn: unknown return: %d", rc );
         }
     }
 
